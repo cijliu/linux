@@ -1896,7 +1896,7 @@ static int calculate_effective_freq(struct pl022 *pl022, int freq, struct
 static const struct pl022_config_chip pl022_default_chip_info = {
 	.com_mode = POLLING_TRANSFER,
 	.iface = SSP_INTERFACE_MOTOROLA_SPI,
-	.hierarchy = SSP_SLAVE,
+	.hierarchy = SSP_MASTER,
 	.slave_tx_disable = DO_NOT_DRIVE_TX,
 	.rx_lev_trig = SSP_RX_1_OR_MORE_ELEM,
 	.tx_lev_trig = SSP_TX_1_OR_MORE_EMPTY_LOC,

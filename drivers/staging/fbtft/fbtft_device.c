@@ -1119,6 +1119,26 @@ static struct fbtft_device_display displays[] = {
 			}
 		}
 	}, {
+		.name = "ilitek,ili9341",
+        .spi = &(struct spi_board_info) {
+	        .modalias = "fb_ili9341",
+	        .max_speed_hz = 50000000,
+	        .mode = SPI_MODE_0,
+	        .platform_data = &(struct fbtft_platform_data) {
+	            .display = {
+                    .buswidth = 8,
+                    .backlight = 1,
+	            },
+	            .bgr = true,
+	            .fps = 30,
+	            .gpios = (const struct fbtft_gpio []) {
+                    { "reset", 40 },
+					{ "dc", 41 },
+					{},
+	            },
+	        }
+        }
+	}, {
 		.name = "tontec35_9481", /* boards before 02 July 2014 */
 		.spi = &(struct spi_board_info) {
 			.modalias = "fb_ili9481",
