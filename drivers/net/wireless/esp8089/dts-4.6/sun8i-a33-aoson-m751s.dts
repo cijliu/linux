@@ -1,0 +1,157 @@
+/*
+ * Copyright 2015 Hans de Goede <hdegoede@redhat.com>
+ *
+ * This file is dual-licensed: you can use it either under the terms
+ * of the GPL or the X11 license, at your option. Note that this dual
+ * licensing only applies to this file, and not this project as a
+ * whole.
+ *
+ *  a) This file is free software; you can redistribute it and/or
+ *     modify it under the terms of the GNU General Public License as
+ *     published by the Free Software Foundation; either version 2 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This file is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ * Or, alternatively,
+ *
+ *  b) Permission is hereby granted, free of charge, to any person
+ *     obtaining a copy of this software and associated documentation
+ *     files (the "Software"), to deal in the Software without
+ *     restriction, including without limitation the rights to use,
+ *     copy, modify, merge, publish, distribute, sublicense, and/or
+ *     sell copies of the Software, and to permit persons to whom the
+ *     Software is furnished to do so, subject to the following
+ *     conditions:
+ *
+ *     The above copyright notice and this permission notice shall be
+ *     included in all copies or substantial portions of the Software.
+ *
+ *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ *     OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+/dts-v1/;
+#include "sun8i-a33.dtsi"
+#include "sun8i-q8-common.dtsi"
+
+/ {
+	model = "Aoson M751s Q8 A33 Tablet";
+	compatible = "allwinner,q8-a33", "allwinner,sun8i-a33";
+
+	/*
+	 * This is actually an active-low reset line for the WLAN
+	 * part of the WiFi CHIP.
+	 *
+	 * Just like for DLDO1 and DLDO2, we cannot tie it to the DT
+	 * node of the SDIO device for now, as there is no bindings
+	 * for it, so we need to have this hack.
+	 */
+	wifi_reg_on: wifi_reg_on {
+		compatible = "regulator-fixed";
+		pinctrl-names = "default";
+		pinctrl-0 = <&m751s_wifi_reg_on_pin>;
+
+		regulator-name = "wifi-reg-on";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-always-on;
+		gpio = <&r_pio 0 6 GPIO_ACTIVE_HIGH>; /* PL6 */
+		enable-active-high;
+	};
+
+	mmc1_pwrseq: mmc1_pwrseq {
+		compatible = "mmc-pwrseq-simple";
+		pinctrl-names = "default";
+		pinctrl-0 = <&m751s_wifi_reset_pin>;
+		reset-gpios = <&r_pio 0 11 GPIO_ACTIVE_LOW>; /* PH9 WIFI_EN */
+	};
+
+	/*
+	 * Both DLDO1 and DLDO2 are used in parallel to power up the
+	 * WiFi Chip.
+	 *
+	 * If those are not enabled, the SDIO part will not enumerate,
+	 * and since there's no way currently to pass DT infos to an
+	 * SDIO device, we cannot really do better than this ugly hack
+	 * for now.
+	 */
+
+	vcc_wifi: wifi_reg {
+		compatible = "coupled-voltage-regulator";
+		regulator-name = "vcc-wifi";
+		vin0-supply = <&vcc_wifi_1>;
+		vin1-supply = <&vcc_wifi_2>;
+	};
+};
+
+&axp22x {
+	regulators {
+		vcc_wifi_1: dldo1 {
+			regulator-min-microvolt = <3300000>;
+			regulator-max-microvolt = <3300000>;
+			regulator-name = "vcc-wifi-1";
+		};
+
+		vcc_wifi_2: dldo2 {
+			regulator-min-microvolt = <3300000>;
+			regulator-max-microvolt = <3300000>;
+			regulator-name = "vcc-wifi-2";
+			regulator-always-on;
+		};
+	};
+};
+
+&mmc1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&mmc1_pins_a>;
+	vmmc-supply = <&vcc_wifi_1>;
+	mmc-pwrseq = <&mmc1_pwrseq>;
+	bus-width = <4>;
+	//non-removable;
+	broken-cd;
+	status = "okay";
+};
+
+&mmc1_pins_a {
+	allwinner,pull = <SUN4I_PINCTRL_PULL_UP>;
+};
+
+&r_pio {
+	m751s_wifi_reg_on_pin: m751s_wifi_reg_on_pin@0 {
+		allwinner,pins = "PL6";
+	        allwinner,function = "gpio_out";
+	        allwinner,drive = <SUN4I_PINCTRL_10_MA>;
+	        allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
+	};
+	m751s_wifi_reset_pin: m751s_wifi_reset_pin@0 {
+		allwinner,pins = "PL11";
+	        allwinner,function = "gpio_out";
+	        allwinner,drive = <SUN4I_PINCTRL_10_MA>;
+	        allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
+	};
+};
+
+/*
+ * FIXME for now we only support host mode and rely on u-boot to have
+ * turned on Vbus which is controlled by the axp223 pmic on the board.
+ *
+ * Once we have axp223 support we should switch to fully supporting otg.
+ */
+&usb_otg {
+	dr_mode = "host";
+	status = "okay";
+};
+
+&usbphy {
+	status = "okay";
+};

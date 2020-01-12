@@ -364,7 +364,9 @@
 			crg_regmap = <&clock>;
 			iocfg_regmap = <&iocfg_ctrl2>;
 			bus-width = <4>;
-			cap-sd-highspeed;
+			//cap-sd-highspeed;
+			cap-sdio-irq;
+			//non-removable;
 			full-pwr-cycle;
 			devid = <2>;
 			status = "enable";

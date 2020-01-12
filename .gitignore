@@ -10,6 +10,8 @@
 # Normal rules
 #
 .*
+!.config
+!./drivers/net/wireless/esp/esp8089/firmware/*.bin
 *.o
 *.o.*
 *.a
