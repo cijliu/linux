@@ -28,11 +28,11 @@
 static struct spi_device *spi_device;
 static struct platform_device *p_device;
 
-static char *name;
+static char *name = "ilitek,ili9341";
 module_param(name, charp, 0);
 MODULE_PARM_DESC(name, "Devicename (required). name=list => list all supported devices.");
 
-static unsigned int rotate;
+static unsigned int rotate = 90;
 module_param(rotate, uint, 0);
 MODULE_PARM_DESC(rotate,
 "Angle to rotate display counter clockwise: 0, 90, 180, 270");
@@ -1131,11 +1131,13 @@ static struct fbtft_device_display displays[] = {
 	            },
 	            .bgr = true,
 	            .fps = 30,
+	            .rotate = 90,
 	            .gpios = (const struct fbtft_gpio []) {
                     { "reset", 40 },
-					{ "dc", 41 },
+					{ "dc", 70 },
 					{},
 	            },
+	            
 	        }
         }
 	}, {
