@@ -340,13 +340,15 @@
 			resets = <&clock 0x1f4 27>, <&clock 0x1f4 29>;
 			reset-names = "crg_reset", "dll_reset";
 			max-frequency = <150000000>;
+			//max-frequency = <50000000>;
 			crg_regmap = <&clock>;
 			iocfg_regmap = <&iocfg_ctrl>;
 			bus-width = <4>;
 			cap-mmc-highspeed;
 			cap-mmc-hw-reset;
-			cap-sd-highspeed;
-			mmc-hs200-1_8v;
+			//cap-sd-highspeed;
+			//mmc-hs200-1_8v;
+			cap-sdio-irq;
 			full-pwr-cycle;
 			devid = <0>;
 			status = "enable";
