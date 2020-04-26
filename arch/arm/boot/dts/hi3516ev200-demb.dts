@@ -62,7 +62,7 @@
     num-cs = <1>;
 
     spidev@0 {
-        compatible = "rohm,dh2228fv";
+        compatible = "hi3516ev200-spi";
         reg = <0>;
         pl022,interface = <0>;
         pl022,com-mode = <0>;

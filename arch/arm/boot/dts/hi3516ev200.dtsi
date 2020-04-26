@@ -238,10 +238,25 @@
 			clocks = <&clock HI3516EV200_I2C2_CLK>;
 			status = "disabled";
 		};
-
+/*
         spi_bus0: spi@12070000 {
             compatible = "arm,pl022", "arm,primecell";
             arm,primecell-periphid = <0x00800022>;
+            reg = <0x12070000 0x1000>;
+            interrupts = <0 14 4>;
+            clocks = <&clock HI3516EV200_SPI0_CLK>;
+            clock-names = "apb_pclk";
+            #address-cells = <1>;
+            #size-cells = <0>;
+#ifdef CONFIG_HIEDMACV310
+            dmas = <&hiedmacv310_0 27 27>, <&hiedmacv310_0 26 26>;
+            dma-names = "tx","rx";
+#endif
+            status = "disabled";
+        };
+*/
+		spi_bus0: spi@12070000 {
+            compatible = "hi3516ev200-spi";
             reg = <0x12070000 0x1000>;
             interrupts = <0 14 4>;
             clocks = <&clock HI3516EV200_SPI0_CLK>;
@@ -344,12 +359,12 @@
 			crg_regmap = <&clock>;
 			iocfg_regmap = <&iocfg_ctrl>;
 			bus-width = <4>;
-			cap-mmc-highspeed;
-			cap-mmc-hw-reset;
+			//cap-mmc-highspeed;
+			//cap-mmc-hw-reset;
 			//cap-sd-highspeed;
 			//mmc-hs200-1_8v;
 			cap-sdio-irq;
-			full-pwr-cycle;
+			//full-pwr-cycle;
 			devid = <0>;
 			status = "enable";
 		};

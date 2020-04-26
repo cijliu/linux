@@ -532,7 +532,11 @@ config SPI_QUP
 
 	  This driver can also be built as a module.  If so, the module
 	  will be called spi_qup.
-
+config SPI_HI3516EV200
+	tristate "Hisilicon HI3516EV200 series SPI"
+	depends on ARCH_HI3516EV200
+	help
+	  SPI driver for Hisilicon HI3516EV200 series ARM SoCs
 config SPI_S3C24XX
 	tristate "Samsung S3C24XX series SPI"
 	depends on ARCH_S3C24XX
