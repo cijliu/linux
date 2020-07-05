@@ -359,9 +359,9 @@
 			crg_regmap = <&clock>;
 			iocfg_regmap = <&iocfg_ctrl>;
 			bus-width = <4>;
-			//cap-mmc-highspeed;
-			//cap-mmc-hw-reset;
-			//cap-sd-highspeed;
+			cap-mmc-highspeed;
+			cap-mmc-hw-reset;
+			cap-sd-highspeed;
 			//mmc-hs200-1_8v;
 			cap-sdio-irq;
 			//full-pwr-cycle;
@@ -377,7 +377,7 @@
 			clock-names = "mmc_clk";
 			resets = <&clock 0x22c 27>, <&clock 0x22c 29>;
 			reset-names = "crg_reset", "dll_reset";
-			max-frequency = <50000000>;
+			max-frequency = <150000000>;
 			crg_regmap = <&clock>;
 			iocfg_regmap = <&iocfg_ctrl2>;
 			bus-width = <4>;
